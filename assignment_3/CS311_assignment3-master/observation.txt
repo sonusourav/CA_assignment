@@ -1,0 +1,25 @@
+Descending-
+Number of Intructions-23
+Current time-1385
+
+
+Prime
+Number of Instructions - 16
+Current time-145
+
+
+Fibonacci-
+Number of Instructions-20
+Current Time-390
+
+EVENodd
+Number of Instructions-9
+Current Time - 30
+
+Palindrome-
+Number of Instructions-16
+Current Time-245
+
+Observation:
+We can observe that as the number of instructions are increasing the time taken for the instructions to be executed also simultaneously. 
+In some cases even if the instruction count is the same the complexity of the instruction execution determines the time taken for execution.

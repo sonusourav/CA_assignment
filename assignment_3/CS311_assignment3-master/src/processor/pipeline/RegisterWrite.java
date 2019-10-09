@@ -18,13 +18,38 @@ public class RegisterWrite {
 	public void performRW()
 	{
 		if(MA_RW_Latch.isRW_enable())
-		{
-			//TODO
-			
-			// if instruction being processed is an end instruction, remember to call Simulator.setSimulationComplete(true);
-			
+		{			
 			MA_RW_Latch.setRW_enable(false);
 			IF_EnableLatch.setIF_enable(true);
+
+			int aluresult=MA_RW_Latch.getAluresult();
+			int loadresult=MA_RW_Latch.getLoadresult();
+			int instruction=MA_RW_Latch.getInstruction();
+			String insInBin = Integer.toBinaryString(instruction);
+			insInBin=String.format("%32s", insInBin).replace(' ', '0');
+
+			int opcode=MA_RW_Latch.getOpcode();
+			int rd;
+
+			if(opcode>=0 && opcode<22){
+				if(opcode%2==0){
+
+					rd=Integer.parseInt(insInBin.substring(15,20),2);
+					containingProcessor.getRegisterFile().setValue(rd, aluresult);
+
+				}else{
+
+					rd=Integer.parseInt(insInBin.substring(10,15),2);
+					containingProcessor.getRegisterFile().setValue(rd, aluresult);
+					
+					
+
+
+				}
+			}else if(opcode==22){
+				rd=Integer.parseInt(insInBin.substring(10,15),2);
+				containingProcessor.getRegisterFile().setValue(rd, loadresult);
+			}
 		}
 	}
 

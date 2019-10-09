@@ -19,52 +19,97 @@ public class Execute {
 	
 	public void performEX()
 	{
-		
-		int instruction=OF_EX_Latch.getInstruction();
-		int opcode=OF_EX_Latch.getOpcode();
-		int op1=OF_EX_Latch.getOp1();
-		int op2=OF_EX_Latch.getOp2();
-		int immediate=OF_EX_Latch.getImmediate();
-		int aluresult=0;
-		
-		switch(opcode%2){
-			case 0:
-			aluresult=op1+op2;
-			break;
-			case 1:
-			aluresult=op1-op2;
-			break;
-			case 3:
-			aluresult=op1*op2;
-			break;
-			case 4:
-			aluresult=op1/op2;
-			containingProcessor.getRegisterFile().setValue(31, op1%op2);
-			break;
-			case 5:
-			aluresult=op1 & op2;
-			break;
-			case 6:
-			aluresult=op1 | op2;
-			break;
-			case 7:
-			aluresult=op1 ^ op2;
-			break;
-			case 8:
-			if(op1<op2)
-			aluresult=1;
-			break;
-			case 9:
-			break;
-			case 10:
-			break;
-			
-			
+		if(OF_EX_Latch.isEX_enable()){
 
+			OF_EX_Latch.setEX_enable(false);
+			EX_MA_Latch.setMA_enable(true);
+			
+			int instruction=OF_EX_Latch.getInstruction();
+			int opcode=OF_EX_Latch.getOpcode();
+			int op1=OF_EX_Latch.getOp1();
+			int op2=OF_EX_Latch.getOp2();
+			int immediate=OF_EX_Latch.getImmediate();
+			int aluresult=0;
+			int branchTarget=OF_EX_Latch.getBranchTarget();
+			int tempOpcode=opcode;
+			if(tempOpcode>=0 && tempOpcode<22){
+				tempOpcode/=2;
+			}
+			switch(tempOpcode){
+				case 0:
+				aluresult=op1+op2;
+				break;
+				case 1:
+				aluresult=op1-op2;
+				break;
+				case 2:
+				aluresult=op1*op2;
+				break;
+				case 3:
+				aluresult=op1/op2;
+				containingProcessor.getRegisterFile().setValue(31, op1%op2);
+				
+				break;
+				case 4:
+				aluresult=op1 & op2;
+				break;
+				case 5:
+				aluresult=op1 | op2;
+				break;
+				case 6:
+				aluresult=op1 ^ op2;
+				break;
+				case 7:
+				if(op1<op2)
+				aluresult=1;
+				break;
+				case 8:aluresult=op1<<op2;
+				break;
+				case 9:aluresult=op1>>>op2;
+				break;
+				case 10:aluresult=op1>>op2;
+				break;
+				case 25:
+				if(op1==op2){
+				EX_IF_Latch.setIsBranchTaken(true);
+				EX_IF_Latch.setBranchPC(branchTarget);
+				containingProcessor.getRegisterFile().setProgramCounter(branchTarget);
+			}
+				break;
+				case 26:
+				if(op1!=op2){
+					EX_IF_Latch.setIsBranchTaken(true);
+					EX_IF_Latch.setBranchPC(branchTarget);
+					containingProcessor.getRegisterFile().setProgramCounter(branchTarget);
+				}
+				break;
+				case 27:
+				if(op1<op2){
+					EX_IF_Latch.setIsBranchTaken(true);
+					EX_IF_Latch.setBranchPC(branchTarget);	
+					containingProcessor.getRegisterFile().setProgramCounter(branchTarget);
+				}
+				break;
+				case 28:
+				if(op1>op2){
+					
+					EX_IF_Latch.setIsBranchTaken(true);
+					EX_IF_Latch.setBranchPC(branchTarget);
+					containingProcessor.getRegisterFile().setProgramCounter(branchTarget);	
+				}
+				break;
+				
+			}
+	
+			EX_MA_Latch.setAluresult(aluresult);
+			EX_MA_Latch.setOp1(op1);
+			EX_MA_Latch.setOp2(op2);
+			EX_MA_Latch.setInstruction(instruction);
+			EX_MA_Latch.setOpcode(opcode);
+			EX_MA_Latch.setImmediate(immediate);
 
+		}
 		
 		}
-
-	}
 
 }
