@@ -17,16 +17,18 @@ public class InstructionFetch {
 		this.EX_IF_Latch = eX_IF_Latch;
 	}
 
-	public void performIF() {
-		if (IF_EnableLatch.isIF_enable()) {
+	public void performIF()
+	{
+		if(IF_EnableLatch.isIF_enable())
+		{
 			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
 			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
 			IF_OF_Latch.setInstruction(newInstruction);
-			//System.out.println("new instruction =" + newInstruction);
 
-			
+			if(EX_IF_Latch.isBranchTaken==true)
+				containingProcessor.getRegisterFile().setProgramCounter(EX_IF_Latch.getBranchPC());
+			else
 			containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
-
 
 			IF_EnableLatch.setIF_enable(false);
 			IF_OF_Latch.setOF_enable(true);
