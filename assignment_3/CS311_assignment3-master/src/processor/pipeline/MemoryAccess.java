@@ -32,7 +32,7 @@ public class MemoryAccess {
 			loadResult=containingProcessor.getMainMemory().getWord(op1+immediate);
 		}else if(opcode ==23){
 			containingProcessor.getMainMemory().setWord(containingProcessor.getRegisterFile().getValue(op2)+immediate, op1);
-			//System.out.println("DESTINATION "+containingProcessor.getRegisterFile().getValue(op2)+"immm"+immediate);
+			System.out.println("DESTINATION "+containingProcessor.getRegisterFile().getValue(op2)+"immm"+immediate);
 		}
 
 		MA_RW_Latch.setAluresult(EX_MA_Latch.getAluresult());

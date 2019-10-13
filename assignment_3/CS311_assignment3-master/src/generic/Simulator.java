@@ -84,8 +84,8 @@ public class Simulator {
 			//System.out.println("RW done ");
 			Clock.incrementClock();
 			k=k+1;
-			//System.out.println("complete? " + simulationComplete);
 		}
+		System.out.println("No of cycles= " + Clock.getCurrentTime());
 		
 		
 	}

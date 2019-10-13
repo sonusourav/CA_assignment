@@ -23,12 +23,12 @@ public class OperandFetch {
 			String insInBin = Integer.toBinaryString(instruction);
 			insInBin=String.format("%32s", insInBin).replace(' ', '0');
 
-			//System.out.println("instruction =" + insInBin);
+			System.out.println("instruction =" + insInBin);
 
 			int opcode = Integer.parseInt(insInBin.substring(0, 5),2);
 			int immediate = 0, branchTarget = 0, op1, op2;
 
-			//System.out.println("opcode value =" + opcode);
+			System.out.println("opcode value =" + opcode);
 
 			if (opcode >= 0 && opcode < 22) {
 
@@ -60,8 +60,8 @@ public class OperandFetch {
 
 			} else if (opcode == 24) {
 				immediate = ((instruction & 4194303) << 10) >> 10;
-				//System.out.println("imm =" + immediate);
-				//System.out.println("pcforjump"+(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1 ));
+				System.out.println("imm =" + immediate);
+				System.out.println("pcforjump"+(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1 ));
 
 				containingProcessor.getRegisterFile()
 						.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate-1);
