@@ -15,7 +15,25 @@ public class MemoryAccess {
 	}
 
 	public void performMA()
-	{
+	{	
+		if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
+			if (OperandFetch.IF_counter==4){
+				OperandFetch.IF_counter++;
+				EX_MA_LatchType.setMA_enable(true);
+			}
+			else if(OperandFetch.IF_counter==5){
+				OperandFetch.IF_counter++;
+				EX_MA_LatchType.setMA_enable(false);
+				MA_RW_LatchType.setRW_enable(true);
+			}
+
+			else {
+				EX_MA_LatchType.setMA_enable(false);
+			}
+	}
+
+		
+
 		if(EX_MA_LatchType.isMA_enable()){
 
 			MA_RW_LatchType.setRW_enable(true);
@@ -43,5 +61,6 @@ public class MemoryAccess {
 
 	}
 }
-
 }
+
+

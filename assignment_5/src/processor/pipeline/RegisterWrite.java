@@ -18,6 +18,21 @@ public class RegisterWrite {
 
 	public void performRW()
 	{
+		if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
+			if (OperandFetch.IF_counter==5){
+				OperandFetch.IF_counter++;
+				MA_RW_LatchType.setRW_enable(true);
+			}
+			else if(OperandFetch.IF_counter==6){
+				OperandFetch.IF_counter++;
+				MA_RW_LatchType.setRW_enable(false);
+			}
+
+			else {
+				EX_MA_LatchType.setMA_enable(false);
+			}
+	}
+
 		if(MA_RW_LatchType.isRW_enable())
 		{
 

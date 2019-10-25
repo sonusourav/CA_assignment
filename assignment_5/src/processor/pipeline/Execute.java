@@ -1,6 +1,7 @@
 package processor.pipeline;
 
 import processor.Processor;
+import sun.tools.jstat.Operator;
 import processor.Clock;
 
 public class Execute {
@@ -19,8 +20,24 @@ public class Execute {
 	}
 
 	public void performEX()
-	{
+	{	
+		if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
+				if (OperandFetch.IF_counter==2){
+					OperandFetch.IF_counter++;
+					OF_EX_LatchType.setEX_enable(true);
+				}
+				else if(OperandFetch.IF_counter==3){
+					OperandFetch.IF_counter++;
+					OF_EX_LatchType.setEX_enable(false);
+					EX_MA_LatchType.setMA_enable(true);
+				}
+				else {
+					OF_EX_LatchType.setEX_enable(false);
+				}
+		}
+
 		if(OF_EX_LatchType.isEX_enable()){
+			
 
 			EX_MA_LatchType.setMA_enable(true);
 

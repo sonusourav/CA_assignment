@@ -15,6 +15,7 @@ public class OperandFetch {
 	int nend = 0;
 	int data = 0;
 	int control = 0;
+	static int IF_counter = 0;
 
 	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch) {
 		this.containingProcessor = containingProcessor;
@@ -27,6 +28,7 @@ public class OperandFetch {
 		int addEX = 100, addMA = 100, addRW = 100, inst = 0, addOP1 = 0, addOP2 = 0;
 		int instruction = IF_OF_Latch.getInstruction();
 		String insInBin = Integer.toBinaryString(instruction);
+		
 		insInBin = String.format("%32s", insInBin).replace(' ', '0');
 		int opcode = Integer.parseInt(insInBin.substring(0, 5), 2);
 
@@ -49,6 +51,28 @@ public class OperandFetch {
 			addRW = getRD(containingProcessor.getMAUnit().MA_RW_Latch.getInstruction());
 			// System.out.println("INSTRUCTION RW"+MA_RW_Latch.getInstruction());
 		}
+		
+		if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
+
+			if (IF_counter==0){
+				IF_counter++;
+				IF_OF_LatchType.setOF_enable(true);
+			}
+			else if (IF_counter==1){
+				IF_counter++;
+				IF_OF_LatchType.setOF_enable(false);
+				OF_EX_LatchType.setEX_enable(true);
+			}
+			else {
+				IF_OF_LatchType.setOF_enable(false);
+			}
+			
+		}
+		else
+		{
+
+		
+		IF_counter=0;
 
 		if (counter == 1) {
 			System.out.println("counter" + counter);
@@ -70,8 +94,8 @@ public class OperandFetch {
 			} else {
 				IF_EnableLatchType.setIF_enable(true);
 				IF_OF_LatchType.setOF_enable(true);
-				containingProcessor.getOFUnit().IF_OF_Latch.setInstruction(0);
-				IF_OF_Latch.setInstruction(0);
+				//containingProcessor.getOFUnit().IF_OF_Latch.setInstruction(0);
+				//IF_OF_Latch.setInstruction(0);
 				// System.out.println("ITS A JUMP");
 
 			}
@@ -182,7 +206,7 @@ public class OperandFetch {
 					&& containingProcessor.getEXUnit().EX_MA_Latch
 							.getInstruction() == containingProcessor.getMAUnit().MA_RW_Latch.getInstruction()
 					&& containingProcessor.getMAUnit().MA_RW_Latch.getInstruction() != 0) {
-
+				
 				if (n == 1) {
 					IF_EnableLatchType.setIF_enable(true);
 					IF_OF_LatchType.setOF_enable(true);
@@ -197,6 +221,7 @@ public class OperandFetch {
 					IF_EnableLatchType.setIF_enable(false);
 					IF_OF_LatchType.setOF_enable(false);
 				}
+				
 			}
 
 		}
@@ -223,6 +248,8 @@ public class OperandFetch {
 			}
 
 		}
+	}
+	
 
 		if (IF_OF_LatchType.isOF_enable()) {
 			OF_EX_LatchType.setEX_enable(true);
@@ -275,7 +302,7 @@ public class OperandFetch {
 				// + immediate -1 ));
 
 				containingProcessor.getRegisterFile()
-						.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate - 2);
+						.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate-1);
 
 				IF_EnableLatchType.setIF_enable(true);
 				IF_OF_LatchType.setOF_enable(false);
@@ -288,7 +315,7 @@ public class OperandFetch {
 				previousPC = containingProcessor.getRegisterFile().getProgramCounter();
 
 				immediate = ((instruction & 131071) << 15) >> 15;
-				OF_EX_Latch.setBranchTarget(containingProcessor.getRegisterFile().getProgramCounter() + immediate - 1);
+				OF_EX_Latch.setBranchTarget(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
 				OF_EX_Latch.setOp1(op1);
 				OF_EX_Latch.setOp2(op2);
 				IF_EnableLatchType.setIF_enable(true);
@@ -303,6 +330,11 @@ public class OperandFetch {
 			}
 
 			OF_EX_Latch.setInstruction(instruction);
++
+
+
+
+
 
 			OF_EX_Latch.setOpcode(opcode);
 
