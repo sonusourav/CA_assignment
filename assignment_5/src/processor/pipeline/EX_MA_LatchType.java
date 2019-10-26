@@ -5,6 +5,7 @@ public class EX_MA_LatchType {
 	static boolean MA_enable=false;
 	int aluresult;
 	int op1,op2,opcode,instruction,immediate;
+	boolean MA_busy;
 
 	public int getImmediate() {
 		return this.immediate;
@@ -74,6 +75,13 @@ public class EX_MA_LatchType {
 
 	public static void setMA_enable(boolean mA_enable) {
 		MA_enable = mA_enable;
+	}
+	public void setMA_busy(boolean busy){
+		MA_busy=busy;
+	}
+
+	public boolean isMA_busy(){
+		return MA_busy;
 	}
 
 }

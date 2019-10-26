@@ -156,7 +156,7 @@ public class OperandFetch {
 						IF_OF_LatchType.setOF_enable(false);
 						// System.out.println("its false3 and opcode" + opcode);
 						data++;
-						System.out.println("data= " + data);
+						System.out.println("data1= " + data);
 					} else {
 
 						if ((addOP1 == 31 || addOP2 == 31)) {
@@ -202,12 +202,18 @@ public class OperandFetch {
 			// containingProcessor.getEXUnit().EX_MA_Latch.getInstruction());
 			// System.out.println("Instruction in RWLATCH" +
 			// containingProcessor.getMAUnit().MA_RW_Latch.getInstruction());
-
+			
 			if (OF_EX_Latch.getInstruction() == containingProcessor.getEXUnit().EX_MA_Latch.getInstruction()
 					&& containingProcessor.getEXUnit().EX_MA_Latch
 							.getInstruction() == containingProcessor.getMAUnit().MA_RW_Latch.getInstruction()
 					&& containingProcessor.getMAUnit().MA_RW_Latch.getInstruction() != 0) {
-				
+				if (containingProcessor.getEXUnit().EX_MA_Latch.isMA_busy()){
+					IF_OF_LatchType.setOF_enable(false);
+					IF_EnableLatchType.setIF_enable(false);
+				}
+				else {
+
+
 				if (n == 1) {
 					IF_EnableLatchType.setIF_enable(true);
 					IF_OF_LatchType.setOF_enable(true);
@@ -216,7 +222,7 @@ public class OperandFetch {
 					if(data<0){
 						data=0;
 					}
-					System.out.println("data= " + data);
+					System.out.println("data3= " + data);
 				} else {
 					n++;
 					IF_EnableLatchType.setIF_enable(false);
@@ -224,6 +230,10 @@ public class OperandFetch {
 				}
 				
 			}
+		}
+
+			
+
 
 		}
 		if (opcode == 29) {

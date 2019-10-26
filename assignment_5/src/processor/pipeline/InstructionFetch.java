@@ -55,7 +55,7 @@ public class InstructionFetch implements Element {
 		IF_OF_Latch.setInstruction(event2.getValue());
 		containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
 		IF_OF_LatchType.setOF_enable(true);
-		System.out.println("ITS HANDLING");
+		System.out.println("ITS HANDLING IF");
 		IF_EnableLatch.setIF_busy(false);
 	}
 

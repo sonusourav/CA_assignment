@@ -30,6 +30,8 @@ public class Execute {
 					OperandFetch.IF_counter++;
 					OF_EX_LatchType.setEX_enable(false);
 					EX_MA_LatchType.setMA_enable(true);
+					System.out.println("MA IS TRUE");
+					MemoryAccess.MA_counter=0;
 				}
 				else {
 					OF_EX_LatchType.setEX_enable(false);
