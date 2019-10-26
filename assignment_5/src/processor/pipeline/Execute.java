@@ -90,6 +90,7 @@ public class Execute {
 				break;
 				case 10:aluresult=op1>>op2;
 				break;
+				/*
 				case 25:
 				if(op1==op2){
 				EX_IF_Latch.setIsBranchTaken(true);
@@ -121,17 +122,18 @@ public class Execute {
 					EX_IF_Latch.setIsBranchTaken(false);
 				}
 				break;
-				case 28:
-				if(op1>op2){
+				//case 28:
+				//if(op1>op2){
 
-					EX_IF_Latch.setIsBranchTaken(true);
-					EX_IF_Latch.setBranchPC(branchTarget);
-					containingProcessor.getRegisterFile().setProgramCounter(branchTarget);
-				}
-				else {
-					EX_IF_Latch.setIsBranchTaken(false);
-				}
-				break;
+				//	EX_IF_Latch.setIsBranchTaken(true);
+				//	EX_IF_Latch.setBranchPC(branchTarget);
+				//	containingProcessor.getRegisterFile().setProgramCounter(branchTarget);
+				//}
+				//else {
+					//EX_IF_Latch.setIsBranchTaken(false);
+				//}
+				//break;
+				*/
 				default:
 					EX_IF_Latch.setIsBranchTaken(false);
 

@@ -56,13 +56,14 @@ public class OperandFetch {
 
 			if (IF_counter==0){
 				IF_counter++;
-				IF_OF_LatchType.setOF_enable(true);
+				IF_OF_LatchType.setOF_enable(false);
 			}
 			else if (IF_counter==1){
 				IF_counter++;
 				IF_OF_LatchType.setOF_enable(false);
 				OF_EX_LatchType.setEX_enable(true);
 			}
+			
 			else {
 				IF_OF_LatchType.setOF_enable(false);
 			}
@@ -228,8 +229,8 @@ public class OperandFetch {
 		if (opcode == 29) {
 
 			boolean branchTaken = containingProcessor.getEXUnit().EX_IF_Latch.getIsBranchTaken();
-			containingProcessor.getRegisterFile()
-					.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() - 1);
+			//containingProcessor.getRegisterFile()
+					//.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() - 1);
 			// System.out.println("IS THE BRANCH TAKEN" + branchTaken);
 			if (nend == 0) {
 				nend = 0;
@@ -257,8 +258,7 @@ public class OperandFetch {
 			insInBin = Integer.toBinaryString(instruction);
 			insInBin = String.format("%32s", insInBin).replace(' ', '0');
 			opcode = Integer.parseInt(insInBin.substring(0, 5), 2);
-			System.out.println("instruction at OF " + Integer.toBinaryString(instruction)
-			 + " Clock "+Clock.getCurrentTime());
+			System.out.println("instruction at OF " + Integer.toBinaryString(instruction) + " Clock "+Clock.getCurrentTime());
 
 			int immediate = 0, op1, op2;
 
@@ -313,7 +313,7 @@ public class OperandFetch {
 				op1 = containingProcessor.getRegisterFile().getValue(Integer.parseInt(insInBin.substring(5, 10), 2));
 				op2 = containingProcessor.getRegisterFile().getValue(Integer.parseInt(insInBin.substring(10, 15), 2));
 				previousPC = containingProcessor.getRegisterFile().getProgramCounter();
-
+				
 				immediate = ((instruction & 131071) << 15) >> 15;
 				OF_EX_Latch.setBranchTarget(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
 				OF_EX_Latch.setOp1(op1);
@@ -323,6 +323,26 @@ public class OperandFetch {
 				counter++;
 				System.out.println("control " + control);
 				control++;
+				if (opcode ==25){
+					if(op1==op2){
+						containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
+					}
+				}
+				else if (opcode ==26){
+					if(op1!=op2){
+						containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
+					}
+				}
+				else if (opcode ==27){
+					if(op1<op2){
+						containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
+					}
+				}
+				else if (opcode ==28){
+					if(op1>op2){
+						containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1);
+					}
+				}
 			} else if (opcode == 29) {
 
 				// Simulator.setSimulationComplete(true);
@@ -330,12 +350,6 @@ public class OperandFetch {
 			}
 
 			OF_EX_Latch.setInstruction(instruction);
-+
-
-
-
-
-
 			OF_EX_Latch.setOpcode(opcode);
 
 		}
