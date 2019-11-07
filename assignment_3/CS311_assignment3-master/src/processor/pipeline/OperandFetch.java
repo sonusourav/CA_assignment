@@ -2,6 +2,7 @@ package processor.pipeline;
 
 import generic.Simulator;
 import processor.Processor;
+import processor.Clock;
 
 public class OperandFetch {
 	Processor containingProcessor;
@@ -16,19 +17,25 @@ public class OperandFetch {
 
 	public void performOF() {
 		if (IF_OF_Latch.isOF_enable()) {
-			IF_OF_Latch.setOF_enable(false);
+			IF_OF_Latch.setOF_enable(true);
 			OF_EX_Latch.setEX_enable(true);
-
+			
 			int instruction = IF_OF_Latch.getInstruction();
 			String insInBin = Integer.toBinaryString(instruction);
 			insInBin=String.format("%32s", insInBin).replace(' ', '0');
+<<<<<<< HEAD
 
 			System.out.println("instruction =" + insInBin);
 
+=======
+
+			//System.out.println("instruction =" + insInBin);
+
+>>>>>>> final version
 			int opcode = Integer.parseInt(insInBin.substring(0, 5),2);
 			int immediate = 0, branchTarget = 0, op1, op2;
 
-			System.out.println("opcode value =" + opcode);
+			//System.out.println("opcode value =" + opcode);
 
 			if (opcode >= 0 && opcode < 22) {
 
@@ -60,8 +67,13 @@ public class OperandFetch {
 
 			} else if (opcode == 24) {
 				immediate = ((instruction & 4194303) << 10) >> 10;
+<<<<<<< HEAD
 				System.out.println("imm =" + immediate);
 				System.out.println("pcforjump"+(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1 ));
+=======
+				//System.out.println("imm =" + immediate);
+				//System.out.println("pcforjump"+(containingProcessor.getRegisterFile().getProgramCounter() + immediate -1 ));
+>>>>>>> final version
 
 				containingProcessor.getRegisterFile()
 						.setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter() + immediate-1);
@@ -76,6 +88,7 @@ public class OperandFetch {
 			} else if (opcode == 29) {
 
 				Simulator.setSimulationComplete(true);
+				System.out.println("The number of cycles are " + Clock.getCurrentTime());
 			}
 
 			OF_EX_Latch.setInstruction(instruction);

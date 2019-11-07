@@ -19,6 +19,7 @@ public class InstructionFetch {
 	}
 
 	public void performIF() {
+<<<<<<< HEAD
 		if (IF_EnableLatchType.isIF_enable()) {
 			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
 			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
@@ -30,6 +31,19 @@ public class InstructionFetch {
 
 
 			IF_OF_LatchType.setOF_enable(true);
+=======
+		if (IF_EnableLatch.isIF_enable()) {
+			int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
+			int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
+			IF_OF_Latch.setInstruction(newInstruction);
+			System.out.println("instruction in IF " + newInstruction+ " Clock "+Clock.getCurrentTime());
+
+			
+			containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+
+
+			IF_OF_Latch.setOF_enable(true);
+>>>>>>> final version
 		}
 	}
 

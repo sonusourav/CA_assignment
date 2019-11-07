@@ -1,8 +1,13 @@
 package processor.pipeline;
 
 public class EX_MA_LatchType {
+<<<<<<< HEAD
 
 	static boolean MA_enable=false;
+=======
+	
+	boolean MA_enable;
+>>>>>>> final version
 	int aluresult;
 	int op1,op2,opcode,instruction,immediate;
 
@@ -57,9 +62,18 @@ public class EX_MA_LatchType {
 	}
 
 	public EX_MA_LatchType() {
+<<<<<<< HEAD
 
 	}
 
+=======
+		MA_enable=false;
+		
+	}
+
+
+
+>>>>>>> final version
 	public int getOpcode() {
 		return this.opcode;
 	}
@@ -68,11 +82,19 @@ public class EX_MA_LatchType {
 		this.opcode = opcode;
 	}
 
+<<<<<<< HEAD
 	public static boolean isMA_enable() {
 		return MA_enable;
 	}
 
 	public static void setMA_enable(boolean mA_enable) {
+=======
+	public boolean isMA_enable() {
+		return MA_enable;
+	}
+
+	public void setMA_enable(boolean mA_enable) {
+>>>>>>> final version
 		MA_enable = mA_enable;
 	}
 

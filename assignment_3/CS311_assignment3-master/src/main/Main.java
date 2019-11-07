@@ -25,6 +25,10 @@ public class Main {
 		Simulator.setupSimulation(args[2], processor);
 		Simulator.simulate();
 		long currentTime = Clock.getCurrentTime();
+<<<<<<< HEAD
+=======
+		//System.out.println("Current Time: "+ currentTime);
+>>>>>>> final version
 		
 		processor.printState(0, 30); // ((0, 0) refers to the range of main memory addresses we wish to print. this is an empty set.
 		

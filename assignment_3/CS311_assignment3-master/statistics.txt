@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Descending
 Number of Intructions-23
 Current time-1385
@@ -20,3 +21,27 @@ Palindrome
 Number of Instructions-16
 Current Time-245
 
+=======
+Descending
+Number of Intructions-23
+Current time-1385
+
+
+Prime
+Number of Instructions - 16
+Current time-145
+
+
+Fibonacci
+Number of Instructions-20
+Current Time-390
+
+EvenORodd
+Number of Instructions-9
+Current Time - 30
+
+Palindrome
+Number of Instructions-16
+Current Time-245
+
+>>>>>>> final version

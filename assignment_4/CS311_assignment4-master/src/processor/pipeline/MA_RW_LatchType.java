@@ -1,8 +1,13 @@
 package processor.pipeline;
 
 public class MA_RW_LatchType {
+<<<<<<< HEAD
 
 	static boolean RW_enable=false;
+=======
+	
+	boolean RW_enable;
+>>>>>>> final version
 	int aluresult,loadresult,instruction,opcode;
 
 	public int getAluresult() {
@@ -36,20 +41,35 @@ public class MA_RW_LatchType {
 	public void setOpcode(int opcode) {
 		this.opcode = opcode;
 	}
+<<<<<<< HEAD
 
 	public MA_RW_LatchType()
 	{
+=======
+	
+	public MA_RW_LatchType()
+	{
+		RW_enable = false;
+>>>>>>> final version
 		aluresult=0;
 		loadresult=0;
 		opcode=0;
 		instruction=0;
 	}
 
+<<<<<<< HEAD
 	public static boolean isRW_enable() {
 		return RW_enable;
 	}
 
 	public static void setRW_enable(boolean rW_enable) {
+=======
+	public boolean isRW_enable() {
+		return RW_enable;
+	}
+
+	public void setRW_enable(boolean rW_enable) {
+>>>>>>> final version
 		RW_enable = rW_enable;
 	}
 

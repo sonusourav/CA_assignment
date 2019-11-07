@@ -1,8 +1,13 @@
 package processor.pipeline;
 
 public class OF_EX_LatchType {
+<<<<<<< HEAD
 
 	static boolean EX_enable=false;
+=======
+	
+	boolean EX_enable;
+>>>>>>> final version
 	boolean isImmediate;
 	int immediate,branchTarget,op1,op2,instruction,opcode;
 
@@ -61,6 +66,7 @@ public class OF_EX_LatchType {
 	public void setIsImmediate(boolean isImmediate) {
 		this.isImmediate = isImmediate;
 	}
+<<<<<<< HEAD
 
 	public OF_EX_LatchType()
 	{
@@ -72,6 +78,20 @@ public class OF_EX_LatchType {
 	}
 
 	public static void setEX_enable(boolean eX_enable) {
+=======
+	
+	public OF_EX_LatchType()
+	{
+		EX_enable = false;
+		isImmediate = false;
+	}
+
+	public boolean isEX_enable() {
+		return EX_enable;
+	}
+
+	public void setEX_enable(boolean eX_enable) {
+>>>>>>> final version
 		EX_enable = eX_enable;
 	}
 
