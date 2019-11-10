@@ -119,7 +119,8 @@ public class Cache implements Element {
 
     public void handleCacheHit(CacheReadEvent event, int address){
         System.out.println("reaching CacheHit "+ address);
-        Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),address));
+        int data = containingProcessor.getMainMemory().getWord(address);
+        Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),data));
     }
 
     public void handleCacheMiss(int address) {

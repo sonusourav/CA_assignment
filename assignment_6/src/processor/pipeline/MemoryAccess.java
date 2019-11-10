@@ -152,7 +152,7 @@ public class MemoryAccess implements Element {
 		else if(opcode==23){
 			containingProcessor.getMainMemory().setWord(containingProcessor.getRegisterFile().getValue(op2)+immediate, op1);
 		}
-		
+		OperandFetch.IF_counter = 6;
 		MA_RW_Latch.setAluresult(EX_MA_Latch.getAluresult());
 		MA_RW_Latch.setLoadresult(loadResult);
 		MA_RW_Latch.setOpcode(opcode);

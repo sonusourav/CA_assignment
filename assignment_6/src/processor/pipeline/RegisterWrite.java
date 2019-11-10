@@ -1,5 +1,6 @@
 package processor.pipeline;
 
+import generic.Operand;
 import generic.Simulator;
 import processor.Processor;
 import processor.Clock;
@@ -18,7 +19,7 @@ public class RegisterWrite {
 	}
 
 	public void performRW()
-	{	
+	{	System.out.println("Counter" + OperandFetch.IF_counter);
 		if (containingProcessor.getMAUnit().EX_MA_Latch.isMA_busy()){
 			
 		}
