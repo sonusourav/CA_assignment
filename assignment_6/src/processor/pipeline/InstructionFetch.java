@@ -3,9 +3,12 @@ package processor.pipeline;
 import processor.Processor;
 import processor.memorysystem.Cache;
 import generic.CacheReadEvent;
+import generic.CacheResponseEvent;
 import generic.Element;
 import generic.Event;
+import generic.MemoryResponseEvent;
 import generic.Simulator;
+import generic.Event.EventType;
 import processor.Clock;
 
 public class InstructionFetch implements Element {
@@ -14,7 +17,7 @@ public class InstructionFetch implements Element {
 	public IF_EnableLatchType IF_EnableLatch;
 	public IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
-	Cache instructionCache=new Cache(8, containingProcessor);
+	Cache instructionCache;
 
 	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch,
 			IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch) {
@@ -40,8 +43,6 @@ public class InstructionFetch implements Element {
 		this.IF_OF_Latch = IF_OF_Latch;
 	}
 
-
-
 	public Cache getInstructionCache() {
 		return this.instructionCache;
 	}
@@ -58,7 +59,7 @@ public class InstructionFetch implements Element {
 			}else{
 
 				Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getCacheSize() ),
-				 this, instructionCache,containingProcessor.getRegisterFile().getProgramCounter()));
+				 this, containingProcessor.getInstructionCache(),containingProcessor.getRegisterFile().getProgramCounter()));
 
 				int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
 				int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
@@ -71,9 +72,22 @@ public class InstructionFetch implements Element {
 
 	@Override
 	public void handleEvent(Event event) {
-	
 		int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
-		instructionCache.cacheRead(currentPC);
+
+		if(event.getEventType()==EventType.MemoryResponse){
+			MemoryResponseEvent event2=(MemoryResponseEvent) event;
+			IF_OF_Latch.setInstruction(event2.getValue());
+			System.out.println("Memory Response IF");
+
+		}else if(event.getEventType()==EventType.CacheResponse){
+
+			CacheResponseEvent event2=(CacheResponseEvent) event;
+			IF_OF_Latch.setInstruction(event2.getValue());
+			System.out.println("Cache Response IF");
+
+		}
+		containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
+		IF_OF_LatchType.setOF_enable(true);
 		IF_EnableLatch.setIF_busy(false);
 		
 	}

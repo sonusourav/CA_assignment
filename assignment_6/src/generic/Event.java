@@ -2,7 +2,7 @@ package generic;
 
 public class Event {
 	
-	public enum EventType {ExecutionComplete, MemoryRead, MemoryResponse, MemoryWrite,CacheRead};
+	public enum EventType {ExecutionComplete, MemoryRead, MemoryResponse, MemoryWrite,CacheRead,CacheResponse};
 	
 	long eventTime;
 	Element requestingElement;

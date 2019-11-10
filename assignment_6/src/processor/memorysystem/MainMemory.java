@@ -43,7 +43,7 @@ public class MainMemory implements Element {
 			Simulator.getEventQueue().addEvent(new MemoryResponseEvent(processor.Clock.getCurrentTime(), this, event2.getRequestingElement(),getWord(event2.getAddressToReadFrom())));
 		}else if(event.getEventType()==EventType.CacheRead){
 			CacheReadEvent event3 =(CacheReadEvent) event;
-			Simulator.getEventQueue().addEvent(new CacheReadEvent(processor.Clock.getCurrentTime(), this,
+			Simulator.getEventQueue().addEvent(new MemoryResponseEvent(processor.Clock.getCurrentTime(), this,
 			 event3.getRequestingElement(),getWord(event3.getAddressToReadFrom())));
 		}
 	}

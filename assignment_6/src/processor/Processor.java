@@ -1,5 +1,6 @@
 package processor;
 
+import processor.memorysystem.Cache;
 import processor.memorysystem.MainMemory;
 import processor.pipeline.EX_IF_LatchType;
 import processor.pipeline.EX_MA_LatchType;
@@ -18,6 +19,7 @@ public class Processor {
 	
 	RegisterFile registerFile;
 	MainMemory mainMemory;
+	Cache instructionCache;
 	
 	IF_EnableLatchType IF_EnableLatch;
 	IF_OF_LatchType IF_OF_Latch;
@@ -49,6 +51,8 @@ public class Processor {
 		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch);
 		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch);
 		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch);
+		instructionCache=new Cache(8, this);
+
 	}
 	
 	public void printState(int memoryStartingAddress, int memoryEndingAddress)
@@ -93,5 +97,15 @@ public class Processor {
 	public RegisterWrite getRWUnit() {
 		return RWUnit;
 	}
+
+
+	public Cache getInstructionCache() {
+		return this.instructionCache;
+	}
+
+	public void setInstructionCache(Cache instructionCache) {
+		this.instructionCache = instructionCache;
+	}
+
 
 }

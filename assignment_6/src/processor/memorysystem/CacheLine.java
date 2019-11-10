@@ -2,11 +2,11 @@ package processor.memorysystem;
 
 public class CacheLine{
 
-    int tag=0,data;
+    int tag,data;
     boolean state=false;
 
     CacheLine(){
-        
+        this.tag=0;
     }
 
     public int getTag() {
