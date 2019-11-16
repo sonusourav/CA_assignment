@@ -3,6 +3,7 @@ package processor.pipeline;
 import processor.Processor;
 import sun.tools.jstat.Operator;
 import processor.Clock;
+import processor.memorysystem.Cache;
 
 public class Execute {
 	Processor containingProcessor;
@@ -22,6 +23,7 @@ public class Execute {
 	public void performEX()
 	{	
 		if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
+			System.out.println("IF is busy in EX");
 				if (OperandFetch.IF_counter==2){
 					OperandFetch.IF_counter++;
 					OF_EX_LatchType.setEX_enable(true);
@@ -34,15 +36,34 @@ public class Execute {
 					MemoryAccess.MA_counter=0;
 				}
 				else {
+					if (Cache.cacheHit==true){
+						System.out.println("Cache is true in EX");
+						if (OF_EX_LatchType.isEX_enable()==true){
+							System.out.println("EX is enabled");
+							OF_EX_LatchType.setEX_enable(true);
+							OperandFetch.IF_counter=4;
+						}
+						else{
+							OF_EX_LatchType.setEX_enable(false);
+						}
+					}
+					else {
 					OF_EX_LatchType.setEX_enable(false);
+					}
+					
 				}
 		}
+		
+			
+		
 
 		if(OF_EX_LatchType.isEX_enable()){
 			
 
 			EX_MA_LatchType.setMA_enable(true);
-
+			if (Cache.cacheHit==true){
+				OF_EX_LatchType.setEX_enable(false);
+			}
 			int instruction=OF_EX_Latch.getInstruction();
 			System.out.println("instruction at EX " + Integer.toBinaryString(instruction) + " Clock "+Clock.getCurrentTime());
 			int opcode=OF_EX_Latch.getOpcode();

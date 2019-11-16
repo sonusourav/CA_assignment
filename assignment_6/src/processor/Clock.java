@@ -2,7 +2,7 @@ package processor;
 
 public class Clock {
 	static long currentTime = 0;
-	static long cacheSize=32;
+	static long latency=2;
 	
 	public static void incrementClock()
 	{
@@ -14,11 +14,11 @@ public class Clock {
 		return currentTime;
 	}
 
-	public static long getCacheSize(){
-		return cacheSize;
+	public static long getlatency(){
+		return latency;
 	}
 
-	public static void setCacheSize(long cacheSize1){
-		cacheSize=cacheSize1;
+	public static void setlatency(long latency1){
+		latency=latency1;
 	}
 }

@@ -15,10 +15,12 @@ import processor.pipeline.EX_MA_LatchType;
 import processor.pipeline.IF_EnableLatchType;
 import processor.pipeline.IF_OF_LatchType;
 import processor.pipeline.MA_RW_LatchType;
+import processor.pipeline.OF_EX_LatchType;
 
 public class Cache implements Element {
 
     int lines;
+    static public boolean cacheHit;
     Processor containingProcessor;
     CacheLine cacheLine[];
 	IF_EnableLatchType IF_EnableLatch;
@@ -62,7 +64,7 @@ public class Cache implements Element {
     }
 
     public void cacheRead(CacheReadEvent event, int address) {
-
+        cacheHit = false;
         int bits = (int) (Math.log(lines / 2) / Math.log(2));
         String addressInBits = Integer.toBinaryString(address);
         addressInBits=String.format("%32s",addressInBits).replace(' ', '0');
@@ -118,13 +120,20 @@ public class Cache implements Element {
     }
 
     public void handleCacheHit(CacheReadEvent event, int address){
+        cacheHit = true;
         System.out.println("reaching CacheHit "+ address);
+        System.out.println("ma enabled" + EX_MA_LatchType.isMA_enable());
+        System.out.println("ex enabled" + OF_EX_LatchType.isEX_enable());
+        System.out.println("OF enabled" + IF_OF_LatchType.isOF_enable());
+        System.out.println("RW enabled" + MA_RW_LatchType.isRW_enable());
+        System.out.println("IF enabled" + IF_EnableLatchType.isIF_enable());
         int data = containingProcessor.getMainMemory().getWord(address);
+        
         Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),data));
     }
 
     public void handleCacheMiss(int address) {
-
+        cacheHit = false;
         System.out.println("reaching CacheMiss "+ address);
         cacheWrite(address,containingProcessor.getMainMemory().getWord(address));
         Simulator.getEventQueue().addEvent(new MemoryReadEvent((Clock.getCurrentTime() + Configuration.mainMemoryLatency ),
@@ -135,7 +144,7 @@ public class Cache implements Element {
 
     @Override
     public void handleEvent(Event event) {
-
+    
         System.out.println("type="+event.getEventType());
         if(event.getEventType()==EventType.CacheRead){
             CacheReadEvent event1=(CacheReadEvent) event;

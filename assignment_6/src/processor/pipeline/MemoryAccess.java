@@ -7,6 +7,7 @@ import generic.MemoryReadEvent;
 import generic.MemoryResponseEvent;
 import processor.Processor;
 import generic.Simulator;
+import processor.memorysystem.Cache;
 
 public class MemoryAccess implements Element {
 	Processor containingProcessor;
@@ -40,14 +41,28 @@ public class MemoryAccess implements Element {
 
 
 	public void performMA()
-	{	//System.out.println("if counter"+OperandFetch.IF_counter);
+	{	System.out.println("if counter"+OperandFetch.IF_counter);
+		System.out.println("MA ENABLED IN MA"+ EX_MA_LatchType.isMA_enable());
 		if ((OperandFetch.IF_counter==4 || EX_MA_Latch.isMA_busy())&&MA_counter==0){
 			OperandFetch.IF_counter++;
 			EX_MA_LatchType.setMA_enable(true);
 		}
 		else {
+			if (Cache.cacheHit==true){
+				if (EX_MA_LatchType.isMA_enable()==true){
+					EX_MA_LatchType.setMA_enable(true);
+					OperandFetch.IF_counter=5;
+				}
+				else{
+					EX_MA_LatchType.setMA_enable(false);
+				}
+			}
+			else {
 			EX_MA_LatchType.setMA_enable(false);
+			}
+			//MA_RW_LatchType.setRW_enable(true);
 		}
+		
 		if (EX_MA_LatchType.isMA_enable()){
 			//System.out.println("IS MA busy" +EX_MA_Latch.isMA_busy());
 			if (EX_MA_Latch.isMA_busy()){
@@ -63,6 +78,7 @@ public class MemoryAccess implements Element {
 				int op2=EX_MA_Latch.getOp2();
 				int immediate=EX_MA_Latch.getImmediate();
 				int loadResult=0;
+				System.out.println("MA counter in MA"+ MA_counter);
 				if(MA_counter!=1){
 					if (opcode ==22||opcode==23){
 						EX_MA_Latch.setMA_busy(true);
@@ -98,9 +114,22 @@ public class MemoryAccess implements Element {
 			
 						else {
 							EX_MA_LatchType.setMA_enable(false);
+							
+
+
 						}
 				}
-
+				else{
+					System.out.println("ITS HERE 1");
+					OperandFetch.IF_counter++;
+					EX_MA_LatchType.setMA_enable(false);
+					MA_RW_LatchType.setRW_enable(true);
+					MA_RW_Latch.setAluresult(EX_MA_Latch.getAluresult());
+					MA_RW_Latch.setLoadresult(loadResult);
+					MA_RW_Latch.setOpcode(opcode);
+					MA_RW_Latch.setInstruction(instruction);
+				}
+				
 				}
 				}
 				else {
@@ -122,6 +151,10 @@ public class MemoryAccess implements Element {
 						else {
 							EX_MA_LatchType.setMA_enable(false);
 						}
+				}
+				else {
+					System.out.println("ITS HERE 2");
+
 				}
 
 				}

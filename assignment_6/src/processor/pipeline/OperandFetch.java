@@ -2,6 +2,7 @@ package processor.pipeline;
 
 import generic.Simulator;
 import processor.Processor;
+import processor.memorysystem.Cache;
 import processor.Clock;
 
 public class OperandFetch {
@@ -16,6 +17,7 @@ public class OperandFetch {
 	int data = 0;
 	int control = 0;
 	static int IF_counter = 0;
+	
 
 	public OperandFetch(Processor containingProcessor, IF_OF_LatchType iF_OF_Latch, OF_EX_LatchType oF_EX_Latch) {
 		this.containingProcessor = containingProcessor;
@@ -66,15 +68,22 @@ public class OperandFetch {
 			
 			else {
 				IF_OF_LatchType.setOF_enable(false);
+				
 			}
 			
 		}
+		
 		else
 		{
-
+			
 		
-		IF_counter=0;
-
+			IF_counter=0;
+			System.out.println("Cache "+ Cache.cacheHit);
+			System.out.println("IS RW ENABLED" + MA_RW_LatchType.isRW_enable());
+			
+		 
+		
+			
 		if (counter == 1) {
 			System.out.println("counter" + counter);
 			counter++;
@@ -367,6 +376,7 @@ public class OperandFetch {
 		// System.out.println("is IF enabled? " + IF_EnableLatchType.isIF_enable());
 
 	}
+	
 
 	public int getRD(int instruction) {
 		String insInBin = Integer.toBinaryString(instruction);

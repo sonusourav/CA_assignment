@@ -57,15 +57,21 @@ public class InstructionFetch implements Element {
 			if(IF_EnableLatch.isIF_busy()){
 				return;
 			}else{
-
-				Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getCacheSize() ),
-				 this, containingProcessor.getInstructionCache(),containingProcessor.getRegisterFile().getProgramCounter()));
-
 				int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
 				int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
 				System.out.println("instruction at IF " + Integer.toBinaryString(newInstruction)+ " Clock "+Clock.getCurrentTime());
-	
+				int instruction_first = containingProcessor.getMainMemory().getWord(currentPC-1);
+				String insInBin_end = Integer.toBinaryString(instruction_first);
+				insInBin_end = String.format("%32s", insInBin_end).replace(' ', '0');
+				int opcode_end = Integer.parseInt(insInBin_end.substring(0, 5), 2);
+				
+
+				
 				IF_EnableLatch.setIF_busy(true) ;
+				Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getlatency() ),
+				 this, containingProcessor.getInstructionCache(),containingProcessor.getRegisterFile().getProgramCounter()));
+				
+				
 			}
 		}
 	}
@@ -86,9 +92,13 @@ public class InstructionFetch implements Element {
 			System.out.println("Cache Response IF");
 
 		}
+		
 		containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
 		IF_OF_LatchType.setOF_enable(true);
 		IF_EnableLatch.setIF_busy(false);
+		
+
+		
 		
 	}
 
