@@ -74,8 +74,9 @@ public class RegisterWrite {
 				insInBin=String.format("%32s", insInBin).replace(' ', '0');
 	
 				int opcode=MA_RW_Latch.getOpcode();
-				//System.out.println("Current PC"+containingProcessor.getRegisterFile().getProgramCounter());
 				if (opcode == 29){
+					System.out.println("Current PC"+containingProcessor.getRegisterFile().getProgramCounter());
+
 						if(Cache.instructionCacheHit==true){
 							containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter()+1);
 						}

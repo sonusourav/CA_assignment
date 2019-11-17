@@ -276,6 +276,10 @@ public class OperandFetch {
 			IF_OF_LatchType.setOF_enable(false);
 			IF_EnableLatchType.setIF_enable(false);
 		}
+		if(containingProcessor.getMAUnit().EX_MA_Latch.isMA_busy()==true){
+			IF_OF_LatchType.setOF_enable(false);
+			IF_EnableLatchType.setIF_enable(false);
+		}
 		if (IF_OF_LatchType.isOF_enable()) {
 			OF_EX_LatchType.setEX_enable(true);
 			instruction = IF_OF_Latch.getInstruction();

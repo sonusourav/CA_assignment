@@ -52,8 +52,8 @@ public class Processor {
 		EXUnit = new Execute(this, OF_EX_Latch, EX_MA_Latch, EX_IF_Latch);
 		MAUnit = new MemoryAccess(this, EX_MA_Latch, MA_RW_Latch);
 		RWUnit = new RegisterWrite(this, MA_RW_Latch, IF_EnableLatch);
-		memoryCache=new Cache(2,this);
-		instructionCache=new Cache(32, this);
+		memoryCache=new Cache(256,this);
+		instructionCache=new Cache(256, this);
 
 	}
 	
