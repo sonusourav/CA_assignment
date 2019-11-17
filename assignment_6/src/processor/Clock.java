@@ -2,7 +2,7 @@ package processor;
 
 public class Clock {
 	static long currentTime = 0;
-	static long latency=1;
+	static long latency=8;
 	
 	public static void incrementClock()
 	{

@@ -1,12 +1,14 @@
 package processor.pipeline;
+
 import processor.Clock;
-import configuration.Configuration;
+import generic.CacheReadEvent;
+import generic.CacheResponseEvent;
 import generic.Element;
 import generic.Event;
-import generic.MemoryReadEvent;
 import generic.MemoryResponseEvent;
 import processor.Processor;
 import generic.Simulator;
+import generic.Event.EventType;
 import processor.memorysystem.Cache;
 
 public class MemoryAccess implements Element {
@@ -14,6 +16,8 @@ public class MemoryAccess implements Element {
 	public EX_MA_LatchType EX_MA_Latch;
 	public MA_RW_LatchType MA_RW_Latch;
 	static int MA_counter=0;
+	Cache memoryCache;
+
 
 	public MemoryAccess(Processor containingProcessor, EX_MA_LatchType eX_MA_Latch, MA_RW_LatchType mA_RW_Latch)
 	{
@@ -81,20 +85,12 @@ public class MemoryAccess implements Element {
 				System.out.println("MA counter in MA"+ MA_counter);
 				if(MA_counter!=1){
 					if (opcode ==22||opcode==23){
-						EX_MA_Latch.setMA_busy(true);
 						
-						if (opcode==22){
-							Simulator.getEventQueue().addEvent(new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
-					 this, containingProcessor.getMainMemory(),op1+immediate));
-						}
-						else if(opcode==23){
-							Simulator.getEventQueue().addEvent(new MemoryReadEvent(Clock.getCurrentTime() + Configuration.mainMemoryLatency,
-					 this, containingProcessor.getMainMemory(),op1+immediate));
-						}
-						MA_RW_Latch.setAluresult(EX_MA_Latch.getAluresult());
-						MA_RW_Latch.setLoadresult(op1+immediate);
-						MA_RW_Latch.setOpcode(opcode);
-						MA_RW_Latch.setInstruction(instruction);
+						EX_MA_Latch.setMA_busy(true);
+						Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getlatency()),
+				 this, containingProcessor.getMemoryCache(),op1+immediate));
+				
+				
 				}
 				else {
 					if (containingProcessor.getIFUnit().IF_EnableLatch.isIF_busy()){
@@ -114,9 +110,6 @@ public class MemoryAccess implements Element {
 			
 						else {
 							EX_MA_LatchType.setMA_enable(false);
-							
-
-
 						}
 				}
 				else{
@@ -177,19 +170,33 @@ public class MemoryAccess implements Element {
 		int op2=EX_MA_Latch.getOp2();
 		int immediate=EX_MA_Latch.getImmediate();
 		int loadResult=0;
-		MemoryResponseEvent event3=(MemoryResponseEvent) event2;
-		if (opcode==22){
-			System.out.println("Contents"+containingProcessor.getMainMemory().getWord(op1+immediate));
-			loadResult=containingProcessor.getMainMemory().getWord(op1+immediate);
-		}
-		else if(opcode==23){
-			containingProcessor.getMainMemory().setWord(containingProcessor.getRegisterFile().getValue(op2)+immediate, op1);
-		}
+
+		if(event2.getEventType()==EventType.CacheResponse){
+
+			CacheResponseEvent event3=(CacheResponseEvent)event2;
+			System.out.println("Reaching MA Cache Response Event");
+			if (opcode==22){
+				System.out.println("Contents"+containingProcessor.getMainMemory().getWord(op1+immediate));
+				loadResult=containingProcessor.getMainMemory().getWord(op1+immediate);
+			}else if(opcode==23){
+				containingProcessor.getMainMemory().setWord(containingProcessor.getRegisterFile().getValue(op2)+immediate, op1);
+			}
+		}else if(event2.getEventType()==EventType.MemoryResponse){
+			System.out.println("Reaching MA Memory Response Event");
+
+			MemoryResponseEvent event3=(MemoryResponseEvent) event2;
+			if (opcode==22){
+				System.out.println("Contents"+containingProcessor.getMainMemory().getWord(op1+immediate));
+				loadResult=containingProcessor.getMainMemory().getWord(op1+immediate);
+			}else if(opcode==23){
+				containingProcessor.getMainMemory().setWord(containingProcessor.getRegisterFile().getValue(op2)+immediate, op1);
+			}
+		}	
 		OperandFetch.IF_counter = 6;
 		MA_RW_Latch.setAluresult(EX_MA_Latch.getAluresult());
 		MA_RW_Latch.setLoadresult(loadResult);
 		MA_RW_Latch.setOpcode(opcode);
-		MA_RW_Latch.setInstruction(instruction);
+		MA_RW_Latch.setInstruction(instruction);	
 
 	}
 }
