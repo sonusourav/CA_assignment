@@ -370,7 +370,8 @@ public class OperandFetch {
 			} else if (opcode == 29) {
 
 				// Simulator.setSimulationComplete(true);
-
+				System.out.println("the pc in OF IS"+containingProcessor.getRegisterFile().getProgramCounter());
+				
 			}
 
 			OF_EX_Latch.setInstruction(instruction);

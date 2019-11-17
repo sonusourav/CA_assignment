@@ -18,6 +18,7 @@ public class InstructionFetch implements Element {
 	public IF_OF_LatchType IF_OF_Latch;
 	EX_IF_LatchType EX_IF_Latch;
 	Cache instructionCache;
+	boolean end =false;
 
 	public InstructionFetch(Processor containingProcessor, IF_EnableLatchType iF_EnableLatch,
 			IF_OF_LatchType iF_OF_Latch, EX_IF_LatchType eX_IF_Latch) {
@@ -95,13 +96,21 @@ public class InstructionFetch implements Element {
 		IF_EnableLatch.setIF_busy(false);
 		}
 		else{
-			IF_OF_LatchType.setOF_enable(true);
+			if(end==false){
+			IF_OF_LatchType.setOF_enable(false);
 			IF_EnableLatch.setIF_busy(false);
 			containingProcessor.getRegisterFile().setProgramCounter(currentPC);
+			end=true;
+			}
+			else{
+
+			}
+		}
+
 		
 		}
 		
 		
 	}
 
-}
+

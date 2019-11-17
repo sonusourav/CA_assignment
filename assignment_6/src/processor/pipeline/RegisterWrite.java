@@ -78,9 +78,11 @@ public class RegisterWrite {
 				//System.out.println("Current PC"+containingProcessor.getRegisterFile().getProgramCounter());
 				if (opcode == 29){
 						if(Cache.cacheHit==true){
-							containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter()-1);
+							containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter()+1);
 						}
 						Simulator.setSimulationComplete(true);
+						containingProcessor.getIFUnit().IF_OF_Latch.setInstruction(0);
+						
 						
 	
 				}
