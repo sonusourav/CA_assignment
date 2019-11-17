@@ -60,15 +60,8 @@ public class InstructionFetch implements Element {
 				int currentPC = containingProcessor.getRegisterFile().getProgramCounter();
 				int newInstruction = containingProcessor.getMainMemory().getWord(currentPC);
 				System.out.println("instruction at IF " + Integer.toBinaryString(newInstruction)+ " Clock "+Clock.getCurrentTime());
-				int instruction_first = containingProcessor.getMainMemory().getWord(currentPC-1);
-				String insInBin_end = Integer.toBinaryString(instruction_first);
-				insInBin_end = String.format("%32s", insInBin_end).replace(' ', '0');
-				int opcode_end = Integer.parseInt(insInBin_end.substring(0, 5), 2);
-				
-
-				
-				IF_EnableLatch.setIF_busy(true) ;
-				Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getlatency() ),
+				IF_EnableLatch.setIF_busy(true);
+				Simulator.getEventQueue().addEvent(new CacheReadEvent((Clock.getCurrentTime() + Clock.getlatency()),
 				 this, containingProcessor.getInstructionCache(),containingProcessor.getRegisterFile().getProgramCounter()));
 				
 				
@@ -92,12 +85,21 @@ public class InstructionFetch implements Element {
 			System.out.println("Cache Response IF");
 
 		}
-		
+		int instruction_new = containingProcessor.getMainMemory().getWord(currentPC);
+		String insInBin_new = Integer.toBinaryString(instruction_new);
+		insInBin_new = String.format("%32s", insInBin_new).replace(' ', '0');
+		int opcode_new = Integer.parseInt(insInBin_new.substring(0, 5), 2);
+		if(opcode_new!=29){	
 		containingProcessor.getRegisterFile().setProgramCounter(currentPC + 1);
 		IF_OF_LatchType.setOF_enable(true);
 		IF_EnableLatch.setIF_busy(false);
+		}
+		else{
+			IF_OF_LatchType.setOF_enable(true);
+			IF_EnableLatch.setIF_busy(false);
+			containingProcessor.getRegisterFile().setProgramCounter(currentPC);
 		
-
+		}
 		
 		
 	}

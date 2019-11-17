@@ -4,6 +4,7 @@ public class IF_OF_LatchType {
 
 	static boolean OF_enable=false;
 	int instruction;
+	static boolean OF_bust = false;
 
 	public IF_OF_LatchType()
 	{	}
@@ -22,6 +23,12 @@ public class IF_OF_LatchType {
 
 	public void setInstruction(int instruction) {
 		this.instruction = instruction;
+	}
+	public static boolean isOF_busy(){
+		return OF_bust;
+	}
+	public static void setOF_busy(boolean value){
+		OF_bust = value;
 	}
 
 }

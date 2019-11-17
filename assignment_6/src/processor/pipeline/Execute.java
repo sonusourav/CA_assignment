@@ -37,7 +37,7 @@ public class Execute {
 				}
 				else {
 					if (Cache.cacheHit==true){
-						System.out.println("Cache is true in EX");
+						//System.out.println("HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 						if (OF_EX_LatchType.isEX_enable()==true){
 							System.out.println("EX is enabled");
 							OF_EX_LatchType.setEX_enable(true);
@@ -52,6 +52,18 @@ public class Execute {
 					}
 					
 				}
+		}
+		else {
+			if(Cache.cacheHit==true){
+				System.out.println("IM GOING HERE");
+				if(IF_OF_LatchType.isOF_busy()==true){
+					System.out.println("OF is busy");
+					OF_EX_LatchType.setEX_enable(true);
+					IF_OF_LatchType.setOF_busy(false);
+					IF_OF_LatchType.setOF_enable(true);
+					IF_EnableLatchType.setIF_enable(true);
+				}
+			}
 		}
 		
 			

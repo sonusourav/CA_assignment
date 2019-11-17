@@ -128,7 +128,15 @@ public class Cache implements Element {
         System.out.println("RW enabled" + MA_RW_LatchType.isRW_enable());
         System.out.println("IF enabled" + IF_EnableLatchType.isIF_enable());
         int data = containingProcessor.getMainMemory().getWord(address);
-        
+        IF_EnableLatch.setIF_busy(false);
+        String insInBin_new = Integer.toBinaryString(data);
+		insInBin_new = String.format("%32s", insInBin_new).replace(' ', '0');
+		int opcode_new = Integer.parseInt(insInBin_new.substring(0, 5), 2);
+		if(opcode_new==29){	
+            //containingProcessor.getRegisterFile().setProgramCounter(address);
+            IF_EnableLatch.setIF_busy(true);
+        }
+
         Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),data));
     }
 

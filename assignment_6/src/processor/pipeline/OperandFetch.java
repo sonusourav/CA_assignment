@@ -59,11 +59,13 @@ public class OperandFetch {
 			if (IF_counter==0){
 				IF_counter++;
 				IF_OF_LatchType.setOF_enable(false);
+				IF_OF_LatchType.setOF_busy(true);
 			}
 			else if (IF_counter==1){
 				IF_counter++;
 				IF_OF_LatchType.setOF_enable(false);
 				OF_EX_LatchType.setEX_enable(true);
+				IF_OF_LatchType.setOF_busy(true);
 			}
 			
 			else {
@@ -269,8 +271,11 @@ public class OperandFetch {
 
 		}
 	}
-	
-
+		if(Cache.cacheHit==true && IF_OF_LatchType.isOF_busy()==true)
+		{
+			IF_OF_LatchType.setOF_enable(false);
+			IF_EnableLatchType.setIF_enable(false);
+		}
 		if (IF_OF_LatchType.isOF_enable()) {
 			OF_EX_LatchType.setEX_enable(true);
 			instruction = IF_OF_Latch.getInstruction();
