@@ -1,6 +1,5 @@
 package processor.pipeline;
 
-import generic.Operand;
 import generic.Simulator;
 import processor.Processor;
 import processor.Clock;
@@ -36,7 +35,7 @@ public class RegisterWrite {
 				}
 				
 				else {
-					if (Cache.cacheHit==true){
+					if (Cache.instructionCacheHit==true){
 						if(MA_RW_LatchType.isRW_enable()==true){
 							MA_RW_LatchType.setRW_enable(true);
 							//OperandFetch.IF_counter=0;
@@ -57,7 +56,7 @@ public class RegisterWrite {
 				int aluresult=MA_RW_Latch.getAluresult();
 				int loadresult=MA_RW_Latch.getLoadresult();
 				int instruction=MA_RW_Latch.getInstruction();
-				if(Cache.cacheHit==true){
+				if(Cache.instructionCacheHit==true){
 					MA_RW_LatchType.setRW_enable(false);
 				}
 				if (MemoryAccess.MA_counter==1){
@@ -77,7 +76,7 @@ public class RegisterWrite {
 				int opcode=MA_RW_Latch.getOpcode();
 				//System.out.println("Current PC"+containingProcessor.getRegisterFile().getProgramCounter());
 				if (opcode == 29){
-						if(Cache.cacheHit==true){
+						if(Cache.instructionCacheHit==true){
 							containingProcessor.getRegisterFile().setProgramCounter(containingProcessor.getRegisterFile().getProgramCounter()+1);
 						}
 						Simulator.setSimulationComplete(true);

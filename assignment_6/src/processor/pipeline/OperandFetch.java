@@ -80,7 +80,7 @@ public class OperandFetch {
 			
 		
 			IF_counter=0;
-			System.out.println("Cache "+ Cache.cacheHit);
+			System.out.println("Cache "+ Cache.instructionCacheHit);
 			System.out.println("IS RW ENABLED" + MA_RW_LatchType.isRW_enable());
 			
 		 
@@ -271,7 +271,7 @@ public class OperandFetch {
 
 		}
 	}
-		if(Cache.cacheHit==true && IF_OF_LatchType.isOF_busy()==true)
+		if(Cache.instructionCacheHit==true && IF_OF_LatchType.isOF_busy()==true)
 		{
 			IF_OF_LatchType.setOF_enable(false);
 			IF_EnableLatchType.setIF_enable(false);

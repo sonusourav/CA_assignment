@@ -21,8 +21,8 @@ import processor.pipeline.OF_EX_LatchType;
 
 public class Cache implements Element {
 
-    int lines;
-    static public boolean cacheHit;
+    private int lines;
+    static public boolean instructionCacheHit;
     Processor containingProcessor;
     CacheLine cacheLine[];
 	IF_EnableLatchType IF_EnableLatch;
@@ -66,46 +66,54 @@ public class Cache implements Element {
     }
 
     public void cacheRead(CacheReadEvent event, int address) {
-        cacheHit = false;
+        System.out.println("no of lines= "+lines);
         int bits = (int) (Math.log(lines / 2) / Math.log(2));
         String addressInBits = Integer.toBinaryString(address);
         addressInBits=String.format("%32s",addressInBits).replace(' ', '0');
         System.out.println("addressInBits"+addressInBits);
         int set=0;
-        if(bits!=0){
+        if(bits>0){
             String lastBits = addressInBits.substring(32 - bits, 32);
             set = Integer.parseInt(lastBits, 2);
         }
         
         Cache insCache=null;
         if(event.getRequestingElement() instanceof MemoryAccess){
-            System.out.println("Instance of Memory Acess");
+            System.out.println("Instance of Memory Access");
             insCache=containingProcessor.getMemoryCache();
 
         }else if(event.getRequestingElement() instanceof InstructionFetch){
             insCache=containingProcessor.getInstructionCache();
-            System.out.println("Instance of Memory Acess");
+            System.out.println("Instance of Instruction Access");
+            instructionCacheHit = false;
         }
         CacheLine insCacheLine[]=new CacheLine[insCache.getLines()];
         insCacheLine=insCache.getCacheLine();
 
-        System.out.println("add"+address);
-        System.out.println("tag0"+insCacheLine[2*set].tag);
-        System.out.println("tag1"+insCacheLine[2*set+1].tag);
+        System.out.println("set = "+set);
+            System.out.println("add"+address);
+            System.out.println("tag0"+insCacheLine[2*set].tag);
+            System.out.println("tag1"+insCacheLine[2*set+1].tag);
+    
+            if (insCacheLine[(2 * set)].tag == address ) {
+                insCacheLine[2 * set].setState(true);
+                insCacheLine[(2 * set) + 1].setState(false);
+                handleCacheHit(event, address);
+            } else if (cacheLine[(2 * set) + 1].tag == address) {
+                insCacheLine[2 * set].setState(false);
+                insCacheLine[2 * set + 1].setState(true);
+                handleCacheHit(event,address);
+            } else {
+                handleCacheMiss(event,address);
+            }
+       
+        if(insCacheLine[2*set]==null && insCacheLine[2*set+1]==null){
 
-        if (insCacheLine[(2 * set)].tag == address ) {
-            insCacheLine[2 * set].setState(true);
-            insCacheLine[(2 * set) + 1].setState(false);
-            handleCacheHit(event, address);
-        } else if (cacheLine[(2 * set) + 1].tag == address) {
-            insCacheLine[2 * set].setState(false);
-            insCacheLine[2 * set + 1].setState(true);
-            handleCacheHit(event,address);
-        } else {
+            handleCacheMiss(event, address);
 
-            handleCacheMiss(event,address);
-        }
-
+        }else{
+           
+        }  
     }
 
     public void cacheWrite(Event event,int address, int value) {
@@ -127,23 +135,37 @@ public class Cache implements Element {
         }
         CacheLine insCacheLine[]=insCache.getCacheLine();
 
-        if(insCacheLine[2*set].state==true && insCacheLine[2*set+1].state==false){
-            insCacheLine[2*set+1].tag=address;
-            insCacheLine[2*set+1].data=value;
-            insCacheLine[2*set].state=false;
-            insCacheLine[2*set+1].state=true;
-        }else{
+        if(insCacheLine[2*set]!=null && insCacheLine[2*set +1]!=null){
+            if(insCacheLine[2*set].state==true && insCacheLine[2*set+1].state==false){
+                insCacheLine[2*set+1].tag=address;
+                insCacheLine[2*set+1].data=value;
+                insCacheLine[2*set].state=false;
+                insCacheLine[2*set+1].state=true;
+            }else{
+                insCacheLine[2*set].tag=address;
+                insCacheLine[2*set].data=value;
+                insCacheLine[2*set].state=true;
+                insCacheLine[2*set+1].state=false;
+            }
+        }else if(insCacheLine[2*set]!=null){
+            if(insCacheLine[2*set].state==true){
+                insCacheLine[2*set+1].tag=address;
+                insCacheLine[2*set+1].data=value;
+                insCacheLine[2*set].state=false;
+                insCacheLine[2*set+1].state=true;
+            }
+        }else if(insCacheLine[2*set +1]!=null){
             insCacheLine[2*set].tag=address;
             insCacheLine[2*set].data=value;
             insCacheLine[2*set].state=true;
             insCacheLine[2*set+1].state=false;
         }
+      
 
     }
 
     public void handleCacheHit(CacheReadEvent event, int address){
-        cacheHit = true;
-        System.out.println("reaching CacheHit "+ address);
+        System.out.println("reaching cache hit "+ address);
         System.out.println("ma enabled" + EX_MA_LatchType.isMA_enable());
         System.out.println("ex enabled" + OF_EX_LatchType.isEX_enable());
         System.out.println("OF enabled" + IF_OF_LatchType.isOF_enable());
@@ -153,15 +175,15 @@ public class Cache implements Element {
         String insInBin_new = Integer.toBinaryString(data);
 		insInBin_new = String.format("%32s", insInBin_new).replace(' ', '0');
 		int opcode_new = Integer.parseInt(insInBin_new.substring(0, 5), 2);
-		
-
+        
+        
         if(event.getRequestingElement() instanceof InstructionFetch){
             IF_EnableLatch.setIF_busy(false);
             if(opcode_new==29){	
                 IF_EnableLatch.setIF_busy(true);
             }
             Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),data));
-
+            instructionCacheHit = true;
         }else if(event.getRequestingElement() instanceof MemoryAccess){
             EX_MA_Latch.setMA_busy(false);
             Simulator.getEventQueue().addEvent(new CacheResponseEvent(processor.Clock.getCurrentTime(), this, event.getRequestingElement(),data));
@@ -170,7 +192,7 @@ public class Cache implements Element {
     }
 
     public void handleCacheMiss(Event event,int address) {
-        cacheHit = false;
+        
         System.out.println("reaching CacheMiss "+ address);
         cacheWrite(event,address,containingProcessor.getMainMemory().getWord(address));
         Simulator.getEventQueue().addEvent(new MemoryReadEvent((Clock.getCurrentTime() + Configuration.mainMemoryLatency ),
@@ -178,6 +200,7 @@ public class Cache implements Element {
                  
                  if(event.getRequestingElement() instanceof InstructionFetch){
                     IF_EnableLatch.setIF_busy(true) ;
+                    instructionCacheHit = false;
                  }else{
                     EX_MA_Latch.setMA_busy(true) ;
                  }
@@ -187,13 +210,14 @@ public class Cache implements Element {
     public void handleEvent(Event event) {
     
         System.out.println("type="+event.getEventType());
+
         if(event.getEventType()==EventType.CacheRead){
             CacheReadEvent event1=(CacheReadEvent) event;
             if(event.getRequestingElement() instanceof MemoryAccess){
-                containingProcessor.getInstructionCache().cacheRead(event1,event1.getAddressToReadFrom());;
+                containingProcessor.getMemoryCache().cacheRead(event1,event1.getAddressToReadFrom());
 
             }else if(event.getRequestingElement() instanceof InstructionFetch){
-                containingProcessor.getMemoryCache().cacheRead(event1,event1.getAddressToReadFrom());;
+                containingProcessor.getInstructionCache().cacheRead(event1,event1.getAddressToReadFrom());
             }
 
         }else if(event.getEventType()==EventType.MemoryResponse){

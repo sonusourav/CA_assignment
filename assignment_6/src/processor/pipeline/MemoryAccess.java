@@ -52,7 +52,7 @@ public class MemoryAccess implements Element {
 			EX_MA_LatchType.setMA_enable(true);
 		}
 		else {
-			if (Cache.cacheHit==true){
+			if (Cache.instructionCacheHit==true){
 				if (EX_MA_LatchType.isMA_enable()==true){
 					EX_MA_LatchType.setMA_enable(true);
 					OperandFetch.IF_counter=5;

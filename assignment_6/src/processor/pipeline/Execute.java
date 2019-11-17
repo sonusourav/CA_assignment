@@ -1,7 +1,6 @@
 package processor.pipeline;
 
 import processor.Processor;
-import sun.tools.jstat.Operator;
 import processor.Clock;
 import processor.memorysystem.Cache;
 
@@ -36,7 +35,7 @@ public class Execute {
 					MemoryAccess.MA_counter=0;
 				}
 				else {
-					if (Cache.cacheHit==true){
+					if (Cache.instructionCacheHit==true){
 						//System.out.println("HAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
 						if (OF_EX_LatchType.isEX_enable()==true){
 							System.out.println("EX is enabled");
@@ -54,7 +53,7 @@ public class Execute {
 				}
 		}
 		else {
-			if(Cache.cacheHit==true){
+			if(Cache.instructionCacheHit==true){
 				System.out.println("IM GOING HERE");
 				if(IF_OF_LatchType.isOF_busy()==true){
 					System.out.println("OF is busy");
@@ -73,7 +72,7 @@ public class Execute {
 			
 
 			EX_MA_LatchType.setMA_enable(true);
-			if (Cache.cacheHit==true){
+			if (Cache.instructionCacheHit==true){
 				OF_EX_LatchType.setEX_enable(false);
 			}
 			int instruction=OF_EX_Latch.getInstruction();
