@@ -69,8 +69,12 @@ public class Cache implements Element {
         String addressInBits = Integer.toBinaryString(address);
         addressInBits=String.format("%32s",addressInBits).replace(' ', '0');
         System.out.println("addressInBits"+addressInBits);
-        String lastBits = addressInBits.substring(32 - bits, 32);
-        int set = Integer.parseInt(lastBits, 2);
+        int set=0;
+        if(bits!=0){
+            String lastBits = addressInBits.substring(32 - bits, 32);
+            set = Integer.parseInt(lastBits, 2);
+        }
+        
         Cache insCache=containingProcessor.getInstructionCache();
         CacheLine insCacheLine[]=new CacheLine[insCache.getLines()];
         insCacheLine=insCache.getCacheLine();
@@ -100,8 +104,12 @@ public class Cache implements Element {
         int bits = (int) (Math.log(lines / 2) / Math.log(2));
         String addressInBits = Integer.toBinaryString(address);
         addressInBits=String.format("%32s",addressInBits).replace(' ', '0');
-        String lastBits = addressInBits.substring(32 - bits, 32);
-        int set = Integer.parseInt(lastBits, 2);
+        int set=0;
+        if(bits!=0){
+            String lastBits = addressInBits.substring(32 - bits, 32);
+            set = Integer.parseInt(lastBits, 2);
+        }
+       
         Cache insCache=containingProcessor.getInstructionCache();
         CacheLine insCacheLine[]=insCache.getCacheLine();
 
